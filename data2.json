@@ -1,10 +1,11 @@
 [
     {
         "id": 1,
-        "title": "範例遊戲 A",
-        "category": "RPG",
-        "img": "https://picsum.photos/500/500?random=1",
-        "video": "https://www.youtube.com/embed/AKXiKBnzp6U",
-        "desc": "這是來自資料夾 1 的遊戲描述。"
+        "title": "Nintendo Switch 運動",
+        "category": "2022年4月29日",
+        "img": "Nintendo Switch 運動",
+        "video": "https://www.youtube.com/embed/6WYFcX_CEpU",
+        "desc": "「Wii 運動」系列作品在Nintendo Switch登場。《Nintendo Switch 運動》使用揮動Joy-Con的直感操作，不論是誰都可以愉快享受。於本作中可享受共8種運動的遊玩樂趣：保齡球、擊劍、網球、高爾夫球、排球、羽毛球、足球和籃球。。"
     }
+
 ]
