@@ -1,11 +1,11 @@
 let currentGameData = [];
 
-// 統一的載入函數
+// 這個函數現在同時負責「單一分類」與「全部顯示」
 async function loadData(target, event) {
     const grid = document.getElementById('game-grid');
     grid.innerHTML = '<div style="color:var(--neon-cyan); padding:20px;">SYSTEM LOADING...</div>';
 
-    // 1. 處理按鈕切換效果
+    // 處理按鈕高亮
     if (event) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
@@ -13,31 +13,24 @@ async function loadData(target, event) {
 
     try {
         let finalData = [];
-        const timestamp = new Date().getTime(); // 防止快取
+        const timestamp = new Date().getTime(); 
 
         if (target === 'all') {
-            // 如果是點擊「全部」，同時抓取 5 個檔案
-            const files = ['data1.json', 'data2.json', 'data3.json', 'data4.json', 'data5.json','data6.json'];
-            const promises = files.map(file => fetch(`${file}?v=${timestamp}`).then(res => {
-                if (!res.ok) throw new Error(`找不到 ${file}`);
-                return res.json();
-            }));
+            // 合併 5 個檔案的邏輯
+            const files = ['data1.json', 'data2.json', 'data3.json', 'data4.json', 'data5.json', 'data6.json'];
+            const promises = files.map(file => fetch(`${file}?v=${timestamp}`).then(res => res.json()));
             const results = await Promise.all(promises);
-            finalData = results.flat(); // 合併陣列
+            finalData = results.flat(); 
         } else {
-            // 如果是點擊單一分類
+            // 單一檔案邏輯
             const response = await fetch(`${target}?v=${timestamp}`);
-            if (!response.ok) throw new Error(`找不到檔案: ${target}`);
             finalData = await response.json();
         }
 
         currentGameData = finalData;
         renderGames(currentGameData);
-        console.log("資料載入成功:", target);
-
     } catch (error) {
-        grid.innerHTML = `<div style="color:red; padding:20px;">ERROR: ${error.message}</div>`;
-        console.error(error);
+        grid.innerHTML = `<div style="color:red; padding:20px;">ERROR: 資料讀取失敗</div>`;
     }
 }
 
@@ -77,4 +70,5 @@ function closeModal() {
 
 // 預設載入全部
 window.onload = () => loadData('all');
+
 
