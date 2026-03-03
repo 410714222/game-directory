@@ -13,15 +13,18 @@
 <header>
     <h1>Game Directory</h1>
     <nav class="filter-nav">
-        <button class="filter-btn active" data-file="all">全部</button>
-    
-            <button class="filter-btn" data-file="data1.json">NS2</button>
-            <button class="filter-btn" data-file="data2.json">任天堂</button>
-            <button class="filter-btn" data-file="data3.json">B</button>
-            <button class="filter-btn" data-file="data4.json">C</button>
-            <button class="filter-btn" data-file="data5.json">D</button>
-            <button class="filter-btn" data-file="data6.json">E</button>
-    </nav>
+        <button class="filter-btn active" data-target="all">全部</button>
+        <button class="filter-btn" data-target="data1.json">NS2</button>
+        <button class="filter-btn" data-target="data2.json">A</button>
+        <button class="filter-btn" data-target="data3.json">B</button>
+        <button class="filter-btn" data-target="data4.json">C</button>
+        <button class="filter-btn" data-target="data5.json">D</button>
+        <button class="filter-btn" data-target="data6.json">E</button>
+</nav>
+
+<div id="game-modal" class="modal">
+    <span id="close-modal-btn" class="close">&times;</span>
+    </div>
 </header>
 
 <main id="game-grid" class="game-grid">
@@ -42,6 +45,7 @@
 </body>
 
 </html>
+
 
 
 
