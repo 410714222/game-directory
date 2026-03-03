@@ -1,10 +1,11 @@
 [
     {
-        "id": 1,
-        "title": "範例遊戲 A",
-        "category": "RPG",
-        "img": "https://picsum.photos/500/500?random=1",
-        "video": "https://www.youtube.com/embed/AKXiKBnzp6U",
-        "desc": "這是來自資料夾 1 的遊戲描述。"
+        "id": 5,
+        "title": "勇者鬥惡龍 VII Reimagined",
+        "category": "2026/02/05",
+        "img": "images/勇者鬥惡龍 VII Reimagined.jpg",
+        "video": "https://www.youtube.com/embed/U7q91QIVOEI",
+        "desc": "這份好奇心，將跨越大海與時空。※ 此商品為 Nintendo Switch™ 版本本遊戲亦有推出Nintendo Switch™ 2 版。請注意避免重複購買。「大海另一頭有更遼闊的世界……就由我們來證明！」故事從住在孤島上的一群少年少女，懷抱著一縷微小的好奇心開始。一場橫越大海、跨越時空的壯闊冒"
     }
+
 ]
