@@ -1,47 +1,51 @@
-// 建立一個變數存放目前載入的資料
 let currentGameData = [];
 
-/**
- * 核心功能：載入資料
- * @param {string} fileName - 檔案名稱 (如 data1.json)
- * @param {Event} event - 點擊事件 (選填)
- */
-async function loadData(fileName, event = null) {
+// 統一的載入函數
+async function loadData(target, event) {
     const grid = document.getElementById('game-grid');
-    
-    // 1. 顯示載入中狀態 (對使用者比較友善)
     grid.innerHTML = '<div style="color:var(--neon-cyan); padding:20px;">SYSTEM LOADING...</div>';
 
-    // 2. 處理按鈕高亮
+    // 1. 處理按鈕切換效果
     if (event) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
     }
 
     try {
-        // 3. 抓取 JSON (增加快取控制防止舊資料干擾)
-        const response = await fetch(fileName + '?v=' + new Date().getTime());
-        
-        if (!response.ok) throw new Error(`找不到檔案: ${fileName}`);
-        
-        currentGameData = await response.json();
-        
-        // 4. 執行渲染
+        let finalData = [];
+        const timestamp = new Date().getTime(); // 防止快取
+
+        if (target === 'all') {
+            // 如果是點擊「全部」，同時抓取 5 個檔案
+            const files = ['data1.json', 'data2.json', 'data3.json', 'data4.json', 'data5.json'];
+            const promises = files.map(file => fetch(`${file}?v=${timestamp}`).then(res => {
+                if (!res.ok) throw new Error(`找不到 ${file}`);
+                return res.json();
+            }));
+            const results = await Promise.all(promises);
+            finalData = results.flat(); // 合併陣列
+        } else {
+            // 如果是點擊單一分類
+            const response = await fetch(`${target}?v=${timestamp}`);
+            if (!response.ok) throw new Error(`找不到檔案: ${target}`);
+            finalData = await response.json();
+        }
+
+        currentGameData = finalData;
         renderGames(currentGameData);
-        console.log(`成功讀取: ${fileName}`, currentGameData);
+        console.log("資料載入成功:", target);
 
     } catch (error) {
-        grid.innerHTML = `<div style="color:red; padding:20px;">ERROR: 無法讀取數據庫 (${fileName})</div>`;
-        console.error("讀取失敗原因:", error);
+        grid.innerHTML = `<div style="color:red; padding:20px;">ERROR: ${error.message}</div>`;
+        console.error(error);
     }
 }
 
-// 渲染卡片到 HTML
+// 渲染畫面
 function renderGames(data) {
     const grid = document.getElementById('game-grid');
-    
     if (data.length === 0) {
-        grid.innerHTML = '<div style="color:white; padding:20px;">此分類目前無資料</div>';
+        grid.innerHTML = '<div style="color:white; padding:20px;">無資料</div>';
         return;
     }
 
@@ -50,31 +54,26 @@ function renderGames(data) {
             <img src="${game.img}" onerror="this.src='https://via.placeholder.com/300?text=Image+Error'">
             <div class="card-body">
                 <h3>${game.title}</h3>
-                <div class="tag"># ${game.category || 'Game'}</div>
+                <div class="tag">${Array.isArray(game.category) ? game.category.map(c => `#${c}`).join(' ') : `#${game.category}`}</div>
             </div>
         </div>
     `).join('');
 }
 
-// 視窗控制
+// Modal 控制 (保持原樣)
 function openModal(id) {
     const game = currentGameData.find(g => g.id === id);
     if (!game) return;
-
     document.getElementById('modal-title').innerText = game.title;
-    document.getElementById('modal-desc').innerText = game.desc || "暫無介紹";
+    document.getElementById('modal-desc').innerText = game.desc;
     document.getElementById('modal-video').src = game.video;
     document.getElementById('game-modal').style.display = 'block';
-    document.body.style.overflow = 'hidden'; 
 }
 
 function closeModal() {
     document.getElementById('game-modal').style.display = 'none';
     document.getElementById('modal-video').src = "";
-    document.body.style.overflow = 'auto';
 }
 
-// 網頁開啟時，預設執行讀取 data1.json
-window.addEventListener('DOMContentLoaded', () => {
-    loadData('data1.json');
-});
+// 預設載入全部
+window.onload = () => loadData('all');
