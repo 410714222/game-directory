@@ -1,15 +1,10 @@
-// 宣告變數 (全檔案只能出現這一次)
+// 核心變數 (只宣告一次)
 let currentGameData = [];
 
-// 核心載入函數
-async function loadData(target, event) {
+// 1. 核心載入函數
+async function loadData(target) {
     const grid = document.getElementById('game-grid');
-    grid.innerHTML = '<div style="color:#00f2ff; padding:20px;">SYSTEM LOADING...</div>';
-
-    if (event) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-    }
+    grid.innerHTML = '<div style="color:#00f2ff; padding:20px; font-family:Orbitron;">SYSTEM LOADING...</div>';
 
     try {
         let finalData = [];
@@ -39,7 +34,7 @@ async function loadData(target, event) {
     }
 }
 
-// 渲染卡片
+// 2. 渲染卡片
 function renderGames(data) {
     const grid = document.getElementById('game-grid');
     if (!data || data.length === 0) {
@@ -48,7 +43,7 @@ function renderGames(data) {
     }
 
     grid.innerHTML = data.map(game => `
-        <div class="game-card" onclick="openModal(${game.id})">
+        <div class="game-card" data-id="${game.id}">
             <img src="${game.img}" onerror="this.src='https://via.placeholder.com/300?text=Image+Error'">
             <div class="card-body">
                 <h3>${game.title}</h3>
@@ -56,9 +51,14 @@ function renderGames(data) {
             </div>
         </div>
     `).join('');
+
+    // 為每張卡片綁定點擊事件
+    document.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('click', () => openModal(card.dataset.id));
+    });
 }
 
-// 視窗控制
+// 3. 視窗控制
 function openModal(id) {
     const game = currentGameData.find(g => g.id == id);
     if (!game) return;
@@ -70,11 +70,24 @@ function openModal(id) {
     document.body.style.overflow = 'hidden';
 }
 
-function closeModal() {
+// 綁定關閉按鈕事件 (假設你的關閉按鈕 class 是 close-btn)
+document.querySelector('.close-btn').addEventListener('click', () => {
     document.getElementById('game-modal').style.display = 'none';
     document.getElementById('modal-video').src = "";
     document.body.style.overflow = 'auto';
-}
+});
 
-// 預設執行
-window.onload = () => loadData('all');
+// 4. 初始化：綁定導覽列按鈕事件
+document.addEventListener('DOMContentLoaded', () => {
+    // 監聽導覽列點擊
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadData(btn.dataset.file);
+        });
+    });
+
+    // 預設載入全部
+    loadData('all');
+});
