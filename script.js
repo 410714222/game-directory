@@ -17,7 +17,7 @@ async function loadData(target, event) {
 
         if (target === 'all') {
             // 如果是點擊「全部」，同時抓取 5 個檔案
-            const files = ['data1.json', 'data2.json', 'data3.json', 'data4.json', 'data5.json'];
+            const files = ['data1.json', 'data2.json', 'data3.json', 'data4.json', 'data5.json','data6.json'];
             const promises = files.map(file => fetch(`${file}?v=${timestamp}`).then(res => {
                 if (!res.ok) throw new Error(`找不到 ${file}`);
                 return res.json();
@@ -77,3 +77,4 @@ function closeModal() {
 
 // 預設載入全部
 window.onload = () => loadData('all');
+
